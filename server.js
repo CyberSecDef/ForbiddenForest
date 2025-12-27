@@ -2,6 +2,7 @@ const WebSocket = require('ws');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const PORT = process.env.PORT || 8080;
 
@@ -109,7 +110,7 @@ const clients = new Map();
 wss.on('connection', (ws) => {
   console.log('Client connected');
   
-  const clientId = Math.random().toString(36).substr(2, 9);
+  const clientId = crypto.randomUUID();
   const gameState = new GameState();
   
   clients.set(clientId, {
@@ -173,11 +174,12 @@ wss.on('connection', (ws) => {
             
             if (distance < enemySize / 2) {
               client.gameState.removeEnemy(enemy.id);
+              const oldScore = client.score;
               client.score += Math.floor(10 * enemy.z);
               hit = true;
               
               // Increase difficulty every 100 points
-              if (client.score % 100 < 10) {
+              if (Math.floor(oldScore / 100) < Math.floor(client.score / 100)) {
                 client.gameState.increaseDifficulty();
               }
               break;

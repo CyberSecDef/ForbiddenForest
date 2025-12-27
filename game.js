@@ -3,6 +3,7 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
+const MIN_PLAYER_Y = CANVAS_HEIGHT / 2;
 
 // Game state
 let ws;
@@ -145,7 +146,7 @@ function updatePlayer() {
     playerX = Math.min(CANVAS_WIDTH - 20, playerX + speed);
   }
   if (keys['ArrowUp']) {
-    playerY = Math.max(CANVAS_HEIGHT / 2, playerY - speed);
+    playerY = Math.max(MIN_PLAYER_Y, playerY - speed);
   }
   if (keys['ArrowDown']) {
     playerY = Math.min(CANVAS_HEIGHT - 60, playerY + speed);
@@ -156,24 +157,20 @@ function updatePlayer() {
 function shoot() {
   if (gameOver) return;
   
-  bullets.push({
+  const bullet = {
     x: playerX,
     y: playerY - 20,
     speed: 10,
     active: true,
-  });
+  };
+  bullets.push(bullet);
   
   // Send to server immediately to check for hits
-  setTimeout(() => {
-    const bullet = bullets[bullets.length - 1];
-    if (bullet && bullet.active) {
-      ws.send(JSON.stringify({
-        type: 'shoot',
-        x: bullet.x,
-        y: bullet.y - bullet.speed * 5, // Predict position
-      }));
-    }
-  }, 50);
+  ws.send(JSON.stringify({
+    type: 'shoot',
+    x: bullet.x,
+    y: bullet.y,
+  }));
 }
 
 // Update bullets
