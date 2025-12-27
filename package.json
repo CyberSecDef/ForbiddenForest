@@ -1,0 +1,15 @@
+{
+  "name": "forbidden-forest",
+  "version": "1.0.0",
+  "description": "A single-player browser-based action-horror game inspired by 1980s aesthetics",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["game", "horror", "websocket", "canvas", "retro"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.14.2"
+  }
+}
